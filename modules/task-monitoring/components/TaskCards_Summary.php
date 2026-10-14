@@ -304,19 +304,35 @@ $taskMonitoringInitialCardLimit = 3;
                                         data-due-date="<?php echo htmlspecialchars($taskMonitoringTask['DueDate'], ENT_QUOTES, 'UTF-8'); ?>"
                                         data-category="<?php echo htmlspecialchars($taskMonitoringTask['Category'], ENT_QUOTES, 'UTF-8'); ?>"
                                         data-priority="<?php echo htmlspecialchars($taskMonitoringTask['Priority'], ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-estimate="<?php echo htmlspecialchars($taskMonitoringTask['Estimate'], ENT_QUOTES, 'UTF-8'); ?>"
                                     >
                                         <div class="task-monitoring-card-top">
                                             <span class="task-monitoring-category">
                                                 <?php echo htmlspecialchars($taskMonitoringTask['Category'], ENT_QUOTES, 'UTF-8'); ?>
                                             </span>
-                                            <button
-                                                class="task-monitoring-card-menu"
-                                                type="button"
-                                                aria-label="Edit <?php echo htmlspecialchars($taskMonitoringTask['TaskTitle'], ENT_QUOTES, 'UTF-8'); ?>"
-                                                data-task-edit
-                                            >
-                                                ...
-                                            </button>
+                                            <span class="task-monitoring-card-top-actions">
+                                                <button
+                                                    class="task-monitoring-card-icon-button"
+                                                    type="button"
+                                                    aria-label="View <?php echo htmlspecialchars($taskMonitoringTask['TaskTitle'], ENT_QUOTES, 'UTF-8'); ?>"
+                                                    title="View task"
+                                                    data-task-view
+                                                >
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12Z"></path>
+                                                        <circle cx="12" cy="12" r="2.5"></circle>
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                    class="task-monitoring-card-menu"
+                                                    type="button"
+                                                    aria-label="Edit <?php echo htmlspecialchars($taskMonitoringTask['TaskTitle'], ENT_QUOTES, 'UTF-8'); ?>"
+                                                    title="Edit task"
+                                                    data-task-edit
+                                                >
+                                                    ...
+                                                </button>
+                                            </span>
                                         </div>
                                         <h3><?php echo htmlspecialchars($taskMonitoringTask['TaskTitle'], ENT_QUOTES, 'UTF-8'); ?></h3>
                                         <p class="task-monitoring-card-description">

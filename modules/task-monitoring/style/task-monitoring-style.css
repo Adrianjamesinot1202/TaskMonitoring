@@ -243,6 +243,7 @@ textarea:focus-visible {
 .task-monitoring-primary-button,
 .task-monitoring-secondary-button,
 .task-monitoring-card-action,
+.task-monitoring-card-icon-button,
 .task-monitoring-card-menu,
 .task-monitoring-tab {
     border: 0;
@@ -751,6 +752,13 @@ textarea:focus-visible {
     font-weight: 750;
 }
 
+.task-monitoring-card-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.task-monitoring-card-icon-button,
 .task-monitoring-card-menu {
     display: grid;
     width: 28px;
@@ -759,10 +767,19 @@ textarea:focus-visible {
     place-items: center;
     color: #8b91a0;
     background: transparent;
+}
+
+.task-monitoring-card-icon-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.task-monitoring-card-menu {
     font-size: 18px;
     line-height: 1;
 }
 
+.task-monitoring-card-icon-button:hover,
 .task-monitoring-card-menu:hover {
     color: var(--task-text);
     background: var(--task-surface-soft);
@@ -936,6 +953,180 @@ textarea:focus-visible {
     background: #ffffff;
     box-shadow: 0 28px 80px rgba(17, 21, 38, 0.3);
     animation: taskMonitoringModalIn 180ms ease-out;
+}
+
+.task-monitoring-details-container {
+    width: min(100%, 620px);
+}
+
+.task-monitoring-details-modal {
+    width: 100%;
+}
+
+.task-monitoring-details-header {
+    background: linear-gradient(180deg, #fbfbff 0%, #ffffff 100%);
+}
+
+.task-monitoring-modal-header.task-monitoring-details-header h2 {
+    margin-top: 10px;
+}
+
+.task-monitoring-details-status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 0 9px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.task-monitoring-details-status.is-pending {
+    color: #9a620e;
+    background: var(--task-pending-soft);
+}
+
+.task-monitoring-details-status.is-ongoing {
+    color: var(--task-ongoing);
+    background: var(--task-ongoing-soft);
+}
+
+.task-monitoring-details-status.is-complete {
+    color: var(--task-success);
+    background: var(--task-success-soft);
+}
+
+.task-monitoring-details-status.is-late {
+    color: var(--task-late);
+    background: var(--task-late-soft);
+}
+
+.task-monitoring-details-body {
+    display: grid;
+    gap: 18px;
+    padding: 22px 24px 26px;
+}
+
+.task-monitoring-details-description {
+    padding: 17px;
+    border: 1px solid var(--task-border);
+    border-radius: 14px;
+    background: var(--task-surface-soft);
+}
+
+.task-monitoring-details-description h3 {
+    margin: 0 0 7px;
+    color: #555d70;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.task-monitoring-details-description p {
+    margin: 0;
+    color: #535b6d;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.task-monitoring-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border: 1px solid var(--task-border);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.task-monitoring-details-item {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+    padding: 15px 17px;
+    border-bottom: 1px solid var(--task-border);
+}
+
+.task-monitoring-details-item:nth-child(odd) {
+    border-right: 1px solid var(--task-border);
+}
+
+.task-monitoring-details-item:nth-last-child(-n + 2) {
+    border-bottom: 0;
+}
+
+.task-monitoring-details-item > span {
+    color: var(--task-muted);
+    font-size: 10px;
+}
+
+.task-monitoring-details-item > strong {
+    overflow: hidden;
+    color: var(--task-text);
+    font-size: 12px;
+    text-overflow: ellipsis;
+}
+
+.task-monitoring-details-priority.is-high {
+    color: var(--task-late);
+}
+
+.task-monitoring-details-priority.is-medium {
+    color: var(--task-pending);
+}
+
+.task-monitoring-details-priority.is-low {
+    color: var(--task-success);
+}
+
+.task-monitoring-details-assignee {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.task-monitoring-details-assignee .task-monitoring-assignee-avatar {
+    width: 25px;
+    height: 25px;
+}
+
+.task-monitoring-details-loading,
+.task-monitoring-details-error {
+    display: grid;
+    min-height: 250px;
+    padding: 30px;
+    place-items: center;
+    align-content: center;
+    text-align: center;
+}
+
+.task-monitoring-details-loading span {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--task-primary-soft);
+    border-top-color: var(--task-primary);
+    border-radius: 50%;
+    animation: task-monitoring-spin 700ms linear infinite;
+}
+
+.task-monitoring-details-loading p,
+.task-monitoring-details-error p {
+    margin: 12px 0 0;
+    color: var(--task-muted);
+    font-size: 12px;
+}
+
+.task-monitoring-details-error h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.task-monitoring-details-error .task-monitoring-secondary-button {
+    margin-top: 18px;
+}
+
+@keyframes task-monitoring-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes taskMonitoringModalIn {
@@ -1303,6 +1494,22 @@ textarea:focus-visible {
 
     .task-monitoring-form-row {
         grid-template-columns: 1fr;
+    }
+
+    .task-monitoring-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .task-monitoring-details-item:nth-child(odd) {
+        border-right: 0;
+    }
+
+    .task-monitoring-details-item:nth-last-child(-n + 2) {
+        border-bottom: 1px solid var(--task-border);
+    }
+
+    .task-monitoring-details-item:last-child {
+        border-bottom: 0;
     }
 }
 

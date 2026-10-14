@@ -31,6 +31,10 @@ taskMonitoringBindEvent('click.taskMonitoringAdd', '#btnTaskMonitoringAdd', func
     task_monitoring_open_add();
 });
 
+taskMonitoringBindEvent('click.taskMonitoringView', '[data-task-view]', function () {
+    task_monitoring_view(this.closest('[data-task-card]'));
+});
+
 taskMonitoringBindEvent('click.taskMonitoringEdit', '[data-task-edit]', function () {
     task_monitoring_open_edit(this.closest('[data-task-card]'));
 });
@@ -43,6 +47,24 @@ taskMonitoringBindEvent('click.taskMonitoringBackdrop', '#taskMonitoringModal', 
     if (event.target.id === 'taskMonitoringModal') {
         task_monitoring_close_modal();
     }
+});
+
+taskMonitoringBindEvent('click.taskMonitoringDetailsClose', '[data-task-details-close]', function () {
+    task_monitoring_close_details();
+});
+
+taskMonitoringBindEvent('click.taskMonitoringDetailsBackdrop', '#taskMonitoringDetailsModal', function (event) {
+    if (event.target.id === 'taskMonitoringDetailsModal') {
+        task_monitoring_close_details();
+    }
+});
+
+taskMonitoringBindEvent('click.taskMonitoringDetailsEdit', '[data-task-details-edit]', function () {
+    var taskID = this.getAttribute('data-task-details-edit');
+    var taskCard = document.querySelector('[data-task-card][data-task-id="' + taskID + '"]');
+
+    task_monitoring_close_details();
+    task_monitoring_open_edit(taskCard);
 });
 
 taskMonitoringBindEvent('submit.taskMonitoringForm', '#taskMonitoringForm', function () {
@@ -114,6 +136,18 @@ function task_monitoring_close_modal() {
     }
 }
 
+function task_monitoring_close_details() {
+    var modal = document.getElementById('taskMonitoringDetailsModal');
+
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+
+    if (taskMonitoringLastFocusedElement) {
+        taskMonitoringLastFocusedElement.focus();
+    }
+}
+
 //===================================================================================================
 // ALL FUNCTIONS RELATED TO TASK MONITORING
 //===================================================================================================
@@ -152,6 +186,54 @@ function task_monitoring_apply_summary_metrics() {
     document.getElementById('taskMonitoringActiveCount').textContent = taskSummary.getAttribute('data-active-count') || '0';
     document.getElementById('taskMonitoringDueTodayCount').textContent = taskSummary.getAttribute('data-due-today-count') || '0';
     document.getElementById('taskMonitoringCompletedCount').textContent = taskSummary.getAttribute('data-completed-count') || '0';
+}
+
+function task_monitoring_view(taskCard) {
+    var modal = $('#taskMonitoringDetailsModal');
+    var detailsContainer = $('#taskMonitoringDetailsContainer');
+
+    if (!taskCard) {
+        return;
+    }
+
+    taskMonitoringLastFocusedElement = document.activeElement;
+    detailsContainer.html(
+        '<section class="task-monitoring-modal task-monitoring-details-modal" role="dialog" aria-modal="true" aria-label="Loading task details">'
+        + '<div class="task-monitoring-details-loading"><span></span><p>Loading task details...</p></div>'
+        + '</section>'
+    );
+    modal.addClass('is-open').attr('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    $.post('components/TaskCards_Details.php', {
+        TaskID: taskCard.getAttribute('data-task-id'),
+        TaskTitle: taskCard.getAttribute('data-title'),
+        TaskDescription: taskCard.getAttribute('data-description'),
+        DisplayStatus: taskCard.getAttribute('data-status'),
+        DueDate: taskCard.getAttribute('data-due-date'),
+        Category: taskCard.getAttribute('data-category'),
+        Priority: taskCard.getAttribute('data-priority'),
+        Estimate: taskCard.getAttribute('data-estimate')
+    }, function (html) {
+        detailsContainer.html(html);
+
+        var closeButton = detailsContainer.find('[data-task-details-close]').first();
+
+        if (closeButton.length) {
+            closeButton.trigger('focus');
+        }
+    }).fail(function (xhr, status, error) {
+        if (typeof window.handleAjaxError === 'function') {
+            window.handleAjaxError(xhr, status, error);
+        }
+
+        detailsContainer.html(
+            '<section class="task-monitoring-modal task-monitoring-details-modal" role="dialog" aria-modal="true" aria-label="Unable to load task details">'
+            + '<div class="task-monitoring-details-error"><h2>Unable to load task</h2><p>Please close this window and try again.</p>'
+            + '<button class="task-monitoring-secondary-button" type="button" data-task-details-close>Close</button></div>'
+            + '</section>'
+        );
+    });
 }
 
 function task_monitoring_open_add() {

@@ -233,6 +233,10 @@ $taskMonitoringToday = new DateTimeImmutable('today');
         </section>
     </div>
 
+    <div class="task-monitoring-modal-backdrop" id="taskMonitoringDetailsModal" aria-hidden="true">
+        <div class="task-monitoring-details-container" id="taskMonitoringDetailsContainer"></div>
+    </div>
+
     <div class="task-monitoring-toast" id="taskMonitoringToast" role="status" aria-live="polite">
         <span class="task-monitoring-toast-mark">✓</span>
         <p id="taskMonitoringToastMessage">Prototype action completed.</p>
