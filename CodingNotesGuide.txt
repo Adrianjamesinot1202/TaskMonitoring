@@ -1,6 +1,25 @@
 GUIDELINES FOR CODING
 
 ==============================================================================
+TASK MONITORING WORKSPACE OVERRIDE
+==============================================================================
+
+This Task Monitoring workspace does not use route.php or router-based URLs.
+
+- Do not create route.php for this workspace.
+- Load PHP components directly through their module-relative file paths.
+- Use jQuery $.post() or $.ajax() for component and action requests.
+- Use POST for component loading and CRUD actions unless a task explicitly
+  approves another method.
+- Load JavaScript and stylesheet files through their direct module-relative
+  paths.
+- Keep business logic inside focused action files even though no router is
+  used.
+
+This workspace-specific instruction overrides the router requirements elsewhere
+in this guide and in the referenced project documentation.
+
+==============================================================================
 STRICT DOCUMENTATION COMPLIANCE
 ==============================================================================
 
