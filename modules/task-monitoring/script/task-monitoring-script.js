@@ -1,6 +1,11 @@
 var taskMonitoringToastTimer = null;
 var taskMonitoringLastFocusedElement = null;
 var taskMonitoringDraggedCard = null;
+var taskMonitoringLayout = 'board';
+var taskMonitoringListStatus = 'all';
+var taskMonitoringListPage = 1;
+var taskMonitoringListPageSize = 8;
+var taskMonitoringTabResizeObserver = null;
 var taskMonitoringBindEvent = typeof window.bindEvent === 'function'
     ? window.bindEvent
     : function (eventName, selector, callback) {
@@ -87,6 +92,19 @@ taskMonitoringBindEvent('click.taskMonitoringLoadMore', '[data-task-load-more]',
     task_monitoring_load_more(this.getAttribute('data-task-load-more'));
 });
 
+taskMonitoringBindEvent('click.taskMonitoringLayout', '[data-task-layout]', function () {
+    task_monitoring_change_layout(this.getAttribute('data-task-layout'));
+});
+
+taskMonitoringBindEvent('click.taskMonitoringListStatus', '[data-list-status]', function () {
+    task_monitoring_change_list_status(this.getAttribute('data-list-status'));
+});
+
+taskMonitoringBindEvent('click.taskMonitoringListPage', '[data-list-page]', function () {
+    taskMonitoringListPage += Number(this.getAttribute('data-list-page'));
+    task_monitoring_refresh_list();
+});
+
 taskMonitoringBindEvent('dragstart.taskMonitoringCard', '[data-task-card]', function (event) {
     task_monitoring_drag_start(this, event);
 });
@@ -161,9 +179,18 @@ function task_monitoring_summary() {
     summaryContainer.html(loadingMarkup);
 
     $.post('components/TaskCards_Summary.php', {}, function (html) {
+        if (taskMonitoringTabResizeObserver) {
+            taskMonitoringTabResizeObserver.disconnect();
+        }
+
         summaryContainer.html(html);
-        task_monitoring_apply_summary_metrics();
-        task_monitoring_refresh_counts();
+        task_monitoring_change_layout(taskMonitoringLayout);
+        task_monitoring_filter(document.getElementById('taskMonitoringSearch').value);
+
+        if (typeof window.ResizeObserver === 'function') {
+            taskMonitoringTabResizeObserver = new ResizeObserver(task_monitoring_position_list_indicator);
+            taskMonitoringTabResizeObserver.observe(summaryContainer.find('.task-monitoring-list-tabs')[0]);
+        }
     }).fail(function (xhr, status, error) {
         if (typeof window.handleAjaxError === 'function') {
             window.handleAjaxError(xhr, status, error);
@@ -174,18 +201,6 @@ function task_monitoring_summary() {
             '<div class="task-monitoring-empty-state is-visible"><p>Unable to load the task board.</p></div>'
         );
     });
-}
-
-function task_monitoring_apply_summary_metrics() {
-    var taskSummary = document.querySelector('[data-task-summary]');
-
-    if (!taskSummary) {
-        return;
-    }
-
-    document.getElementById('taskMonitoringActiveCount').textContent = taskSummary.getAttribute('data-active-count') || '0';
-    document.getElementById('taskMonitoringDueTodayCount').textContent = taskSummary.getAttribute('data-due-today-count') || '0';
-    document.getElementById('taskMonitoringCompletedCount').textContent = taskSummary.getAttribute('data-completed-count') || '0';
 }
 
 function task_monitoring_view(taskCard) {
@@ -307,7 +322,112 @@ function task_monitoring_filter(searchValue) {
         taskCard.classList.toggle('task-monitoring-hidden', searchableText.indexOf(normalizedSearch) === -1);
     });
 
+    taskMonitoringListPage = 1;
     task_monitoring_refresh_counts();
+}
+
+function task_monitoring_change_layout(layout) {
+    var summary = document.querySelector('[data-task-summary]');
+
+    taskMonitoringLayout = layout === 'list' ? 'list' : 'board';
+
+    document.querySelectorAll('[data-task-layout]').forEach(function (button) {
+        var isActive = button.getAttribute('data-task-layout') === taskMonitoringLayout;
+
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+    });
+
+    if (!summary) {
+        return;
+    }
+
+    summary.classList.toggle('is-list', taskMonitoringLayout === 'list');
+    summary.querySelectorAll('[data-task-card]').forEach(function (card) {
+        card.setAttribute('draggable', String(taskMonitoringLayout === 'board'));
+    });
+    task_monitoring_refresh_list();
+}
+
+function task_monitoring_refresh_list() {
+    var summary = document.querySelector('[data-task-summary]');
+    var matchingCards = [];
+
+    if (!summary) {
+        return;
+    }
+
+    summary.querySelectorAll('[data-task-card]').forEach(function (card) {
+        var matchesStatus = taskMonitoringListStatus === 'all'
+            || card.getAttribute('data-status') === taskMonitoringListStatus;
+
+        card.classList.add('task-monitoring-list-hidden');
+
+        if (matchesStatus && !card.classList.contains('task-monitoring-hidden')) {
+            matchingCards.push(card);
+        }
+    });
+
+    var pageCount = Math.max(1, Math.ceil(matchingCards.length / taskMonitoringListPageSize));
+    taskMonitoringListPage = Math.max(1, Math.min(taskMonitoringListPage, pageCount));
+    var pageStart = (taskMonitoringListPage - 1) * taskMonitoringListPageSize;
+    var pageEnd = Math.min(pageStart + taskMonitoringListPageSize, matchingCards.length);
+
+    matchingCards.slice(pageStart, pageEnd).forEach(function (card) {
+        card.classList.remove('task-monitoring-list-hidden');
+    });
+
+    summary.querySelectorAll('[data-list-status]').forEach(function (button) {
+        var isActive = button.getAttribute('data-list-status') === taskMonitoringListStatus;
+
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+    });
+
+    summary.querySelector('[data-list-results]').textContent = matchingCards.length === 0
+        ? '0 tasks'
+        : 'Showing ' + (pageStart + 1) + '–' + pageEnd + ' of ' + matchingCards.length + ' tasks';
+    summary.querySelector('[data-list-page-label]').textContent = taskMonitoringListPage + ' / ' + pageCount;
+    summary.querySelector('[data-list-page="-1"]').disabled = taskMonitoringListPage === 1;
+    summary.querySelector('[data-list-page="1"]').disabled = taskMonitoringListPage === pageCount;
+    summary.querySelector('[data-list-empty]').hidden = matchingCards.length !== 0;
+    task_monitoring_position_list_indicator();
+}
+
+function task_monitoring_change_list_status(status) {
+    var summary = document.querySelector('[data-task-summary]');
+
+    if (!summary || status === taskMonitoringListStatus) {
+        return;
+    }
+
+    taskMonitoringListStatus = status;
+    taskMonitoringListPage = 1;
+    task_monitoring_refresh_list();
+
+    summary.classList.remove('is-list-transition');
+    void summary.offsetWidth;
+    summary.classList.add('is-list-transition');
+}
+
+function task_monitoring_position_list_indicator() {
+    var summary = document.querySelector('[data-task-summary].is-list');
+
+    if (!summary) {
+        return;
+    }
+
+    var activeTab = summary.querySelector('[data-list-status].is-active');
+    var indicator = summary.querySelector('[data-list-tab-indicator]');
+
+    if (!activeTab || !indicator) {
+        return;
+    }
+
+    indicator.style.width = activeTab.offsetWidth + 'px';
+    indicator.style.height = activeTab.offsetHeight + 'px';
+    indicator.style.transform = 'translate(' + activeTab.offsetLeft + 'px, ' + activeTab.offsetTop + 'px)';
+    indicator.classList.add('is-positioned');
 }
 
 function task_monitoring_change_mobile_tab(status) {
@@ -437,6 +557,11 @@ function task_monitoring_update_card_actions(taskCard, status) {
     var actionContainer = taskCard.querySelector('[data-task-card-actions]');
     var firstAction = document.createElement('button');
     var secondAction = document.createElement('button');
+    var listStatus = taskCard.querySelector('[data-list-card-status]');
+
+    if (listStatus) {
+        listStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+    }
 
     if (!actionContainer) {
         return;
@@ -465,13 +590,6 @@ function task_monitoring_update_card_actions(taskCard, status) {
 }
 
 function task_monitoring_refresh_counts() {
-    var statusCounts = {
-        pending: 0,
-        ongoing: 0,
-        complete: 0,
-        late: 0
-    };
-
     document.querySelectorAll('[data-task-column]').forEach(function (taskColumn) {
         var status = taskColumn.getAttribute('data-task-column');
         var visibleCards = taskColumn.querySelectorAll('[data-task-card]:not(.task-monitoring-hidden)').length;
@@ -484,7 +602,11 @@ function task_monitoring_refresh_counts() {
         var totalCountElement = taskColumn.querySelector('[data-total-card-count="' + status + '"]');
         var loadMoreButton = taskColumn.querySelector('[data-task-load-more="' + status + '"]');
 
-        statusCounts[status] = totalCards;
+        var metricElement = document.querySelector('[data-status-metric="' + status + '"]');
+
+        if (metricElement) {
+            metricElement.textContent = totalCards;
+        }
         emptyState.classList.toggle('is-visible', visibleCards === 0);
         countElement.textContent = visibleCards;
         mobileCountElement.textContent = visibleCards;
@@ -501,7 +623,5 @@ function task_monitoring_refresh_counts() {
             loadMoreButton.hidden = taskColumn.querySelectorAll('[data-task-card].task-monitoring-page-hidden:not(.task-monitoring-hidden)').length === 0;
         }
     });
-
-    document.getElementById('taskMonitoringActiveCount').textContent = statusCounts.pending + statusCounts.ongoing + statusCounts.late;
-    document.getElementById('taskMonitoringCompletedCount').textContent = statusCounts.complete;
+    task_monitoring_refresh_list();
 }

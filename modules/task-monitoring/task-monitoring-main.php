@@ -11,6 +11,9 @@ $taskMonitoringToday = new DateTimeImmutable('today');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Monitoring</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&amp;display=swap">
     <link rel="stylesheet" href="style/task-monitoring-style.css?v=<?php echo filemtime(__DIR__ . '/style/task-monitoring-style.css'); ?>">
 </head>
 <body>
@@ -18,12 +21,6 @@ $taskMonitoringToday = new DateTimeImmutable('today');
         <aside class="task-monitoring-sidebar" aria-label="Primary navigation">
             <div>
                 <div class="task-monitoring-brand">
-                    <div class="task-monitoring-brand-mark" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 11l3 3L22 4"></path>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                        </svg>
-                    </div>
                     <div class="task-monitoring-brand-text">
                         <p class="task-monitoring-brand-name">Task Monitor</p>
                         <p class="task-monitoring-brand-copy">Personal workspace</p>
@@ -47,14 +44,12 @@ $taskMonitoringToday = new DateTimeImmutable('today');
                             <path d="M16 3v4M8 3v4M3 10h18"></path>
                         </svg>
                         <span>Calendar</span>
-                        <small class="task-monitoring-coming-soon">Soon</small>
                     </button>
                     <button class="task-monitoring-nav-item is-disabled" type="button" tabindex="-1">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M4 19V9M10 19V5M16 19v-7M22 19V2"></path>
                         </svg>
                         <span>Reports</span>
-                        <small class="task-monitoring-coming-soon">Soon</small>
                     </button>
                 </nav>
             </div>
@@ -64,7 +59,6 @@ $taskMonitoringToday = new DateTimeImmutable('today');
                     <div class="task-monitoring-avatar">AJ</div>
                     <div class="task-monitoring-profile-copy-wrap">
                         <p class="task-monitoring-profile-name">My workspace</p>
-                        <p class="task-monitoring-profile-copy">Local prototype</p>
                     </div>
                 </div>
             </div>
@@ -74,7 +68,7 @@ $taskMonitoringToday = new DateTimeImmutable('today');
             <header class="task-monitoring-topbar">
                 <div class="task-monitoring-heading">
                     <h1>Good day, AJ</h1>
-                    <p><?php echo $taskMonitoringToday->format('l, F j, Y'); ?> · Here is what needs your attention.</p>
+                    <p><?php echo $taskMonitoringToday->format('l, F j, Y'); ?></p>
                 </div>
                 <div class="task-monitoring-topbar-actions">
                     <button class="task-monitoring-icon-button" type="button" aria-label="Notifications" data-prototype-action="Notifications">
@@ -84,61 +78,36 @@ $taskMonitoringToday = new DateTimeImmutable('today');
                         </svg>
                         <span class="task-monitoring-notification-dot" aria-hidden="true"></span>
                     </button>
-                    <button class="task-monitoring-primary-button" id="btnTaskMonitoringAdd" type="button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-                            <path d="M12 5v14M5 12h14"></path>
-                        </svg>
-                        <span>Add Task</span>
-                    </button>
+                    <span class="task-monitoring-user-avatar" role="img" aria-label="User profile: AJ" title="AJ">AJ</span>
                 </div>
             </header>
 
             <section class="task-monitoring-overview" aria-label="Task overview">
-                <article class="task-monitoring-focus-card">
+                <article class="task-monitoring-metric-card is-pending">
                     <div>
-                        <small>Today’s focus</small>
-                        <h2>Keep the board simple: finish what is active before adding more work.</h2>
-                    </div>
-                    <div class="task-monitoring-progress-ring" aria-label="Progress 68 percent">
-                        <span>68%</span>
+                        <p class="task-monitoring-metric-value" data-status-metric="pending">0</p>
+                        <p class="task-monitoring-metric-label">Pending</p>
                     </div>
                 </article>
 
-                <article class="task-monitoring-metric-card">
-                    <div class="task-monitoring-metric-icon is-active">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M9 11l3 3L22 4"></path>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                        </svg>
-                    </div>
+                <article class="task-monitoring-metric-card is-ongoing">
                     <div>
-                        <p class="task-monitoring-metric-value" id="taskMonitoringActiveCount">0</p>
-                        <p class="task-monitoring-metric-label">Active tasks</p>
+                        <p class="task-monitoring-metric-value" data-status-metric="ongoing">0</p>
+                        <p class="task-monitoring-metric-label">Ongoing</p>
                     </div>
                 </article>
 
-                <article class="task-monitoring-metric-card">
-                    <div class="task-monitoring-metric-icon is-today">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="12" cy="12" r="9"></circle>
-                            <path d="M12 7v5l3 2"></path>
-                        </svg>
-                    </div>
+                <article class="task-monitoring-metric-card is-complete">
                     <div>
-                        <p class="task-monitoring-metric-value" id="taskMonitoringDueTodayCount">0</p>
-                        <p class="task-monitoring-metric-label">Due today</p>
+                        <p class="task-monitoring-metric-value" data-status-metric="complete">0</p>
+                        <p class="task-monitoring-metric-label">Complete</p>
                     </div>
                 </article>
 
-                <article class="task-monitoring-metric-card">
-                    <div class="task-monitoring-metric-icon is-complete">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M20 6L9 17l-5-5"></path>
-                        </svg>
-                    </div>
+                <article class="task-monitoring-metric-card is-late">
                     <div>
-                        <p class="task-monitoring-metric-value" id="taskMonitoringCompletedCount">0</p>
-                        <p class="task-monitoring-metric-label">Completed</p>
+                        <p class="task-monitoring-metric-value" data-status-metric="late">0</p>
+                        <p class="task-monitoring-metric-label">Late</p>
                     </div>
                 </article>
             </section>
@@ -147,15 +116,38 @@ $taskMonitoringToday = new DateTimeImmutable('today');
                 <div class="task-monitoring-toolbar">
                     <div class="task-monitoring-section-title">
                         <h2 id="taskMonitoringBoardTitle">My task board</h2>
-                        <p>Drag tasks between Pending, Ongoing, and Complete. Late is detected automatically.</p>
                     </div>
-                    <label class="task-monitoring-search" for="taskMonitoringSearch">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
-                            <circle cx="11" cy="11" r="7"></circle>
-                            <path d="M20 20l-4-4"></path>
+                    <div class="task-monitoring-toolbar-actions">
+                        <label class="task-monitoring-search" for="taskMonitoringSearch">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="M20 20l-4-4"></path>
+                            </svg>
+                            <input id="taskMonitoringSearch" type="search" placeholder="Search tasks" aria-label="Search tasks" autocomplete="off">
+                        </label>
+                        <button class="task-monitoring-primary-button" id="btnTaskMonitoringAdd" type="button" aria-label="Add task">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                                <path d="M12 5v14M5 12h14"></path>
+                            </svg>
+                            <span>Add Task</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="task-monitoring-view-switch" role="group" aria-label="Task view">
+                    <button class="task-monitoring-view-button is-active" type="button" data-task-layout="board" aria-pressed="true" aria-controls="taskMonitoringSummaryContainer">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <rect x="3" y="4" width="7" height="16" rx="2"></rect>
+                            <rect x="14" y="4" width="7" height="16" rx="2"></rect>
                         </svg>
-                        <input id="taskMonitoringSearch" type="search" placeholder="Search tasks" autocomplete="off">
-                    </label>
+                        Board
+                    </button>
+                    <button class="task-monitoring-view-button" type="button" data-task-layout="list" aria-pressed="false" aria-controls="taskMonitoringSummaryContainer">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path>
+                        </svg>
+                        List
+                    </button>
                 </div>
 
                 <div id="taskMonitoringSummaryContainer" aria-live="polite">

@@ -233,6 +233,18 @@ $taskMonitoringInitialCardLimit = 3;
     data-due-today-count="<?php echo $taskMonitoringDueTodayCount; ?>"
     data-completed-count="<?php echo $taskMonitoringCompletedCount; ?>"
 >
+                <div class="task-monitoring-list-only task-monitoring-list-tabs" role="group" aria-label="Filter tasks by status">
+                    <span class="task-monitoring-tab-indicator" data-list-tab-indicator aria-hidden="true"></span>
+                    <button class="task-monitoring-tab is-active" type="button" data-list-status="all" aria-pressed="true">All tasks</button>
+                    <?php foreach ($taskMonitoringColumns as $taskMonitoringStatusKey => $taskMonitoringColumn) { ?>
+                        <button class="task-monitoring-tab" type="button" data-list-status="<?php echo htmlspecialchars($taskMonitoringStatusKey, ENT_QUOTES, 'UTF-8'); ?>" aria-pressed="false">
+                            <?php echo htmlspecialchars($taskMonitoringColumn['label'], ENT_QUOTES, 'UTF-8'); ?>
+                        </button>
+                    <?php } ?>
+                </div>
+                <div class="task-monitoring-list-only task-monitoring-list-heading" aria-hidden="true">
+                    <span>Task</span><span>Due date</span><span>Priority</span><span>Status</span><span>Actions</span>
+                </div>
                 <div class="task-monitoring-mobile-tabs" aria-label="Task statuses">
                     <?php foreach ($taskMonitoringColumns as $taskMonitoringStatusKey => $taskMonitoringColumn) { ?>
                         <button
@@ -335,6 +347,9 @@ $taskMonitoringInitialCardLimit = 3;
                                             </span>
                                         </div>
                                         <h3><?php echo htmlspecialchars($taskMonitoringTask['TaskTitle'], ENT_QUOTES, 'UTF-8'); ?></h3>
+                                        <span class="task-monitoring-list-only task-monitoring-list-status" data-list-card-status>
+                                            <?php echo htmlspecialchars($taskMonitoringColumn['label'], ENT_QUOTES, 'UTF-8'); ?>
+                                        </span>
                                         <p class="task-monitoring-card-description">
                                             <?php echo htmlspecialchars($taskMonitoringTask['TaskDescription'], ENT_QUOTES, 'UTF-8'); ?>
                                         </p>
@@ -414,4 +429,15 @@ $taskMonitoringInitialCardLimit = 3;
                         </section>
                     <?php } ?>
                 </div>
+                <div class="task-monitoring-list-only task-monitoring-list-empty" data-list-empty hidden>
+                    No tasks found. Try another status or search.
+                </div>
+                <footer class="task-monitoring-list-only task-monitoring-list-pagination">
+                    <span data-list-results></span>
+                    <div>
+                        <button class="task-monitoring-load-button" type="button" data-list-page="-1" aria-label="Previous task page">Previous</button>
+                        <span data-list-page-label></span>
+                        <button class="task-monitoring-load-button" type="button" data-list-page="1" aria-label="Next task page">Next</button>
+                    </div>
+                </footer>
 </div>

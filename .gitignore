@@ -3,3 +3,7 @@
 .env.*
 !.env.example
 
+# Private workspace notes and reference documents.
+/CodingNotesGuide.txt
+/*.docx
+
