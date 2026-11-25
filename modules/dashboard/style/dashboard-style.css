@@ -1,0 +1,232 @@
+.task-monitoring-overview {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 12px 0;
+    margin-bottom: 22px;
+    border: 1px solid var(--task-border);
+    border-radius: 16px;
+    background: #ffffff;
+}
+
+.task-monitoring-metric-card {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    min-height: 78px;
+    padding: 0 20px;
+    color: #292d32;
+}
+
+.task-monitoring-metric-card + .task-monitoring-metric-card {
+    border-left: 1px solid var(--task-border);
+}
+
+.task-monitoring-metric-card > div {
+    display: grid;
+    min-width: 0;
+    gap: 6px;
+}
+
+.task-monitoring-metric-value {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.03em;
+}
+
+.task-monitoring-metric-label {
+    margin: 0;
+    color: #727780;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.task-monitoring-metric-detail {
+    margin: 2px 0 0;
+    color: #727780;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.task-monitoring-dashboard-widgets {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.task-monitoring-widget {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--task-border);
+    border-radius: 18px;
+    background: var(--task-surface);
+}
+
+.task-monitoring-widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0f1f6;
+}
+
+.task-monitoring-widget-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-monitoring-widget-title h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.task-monitoring-widget-icon {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    place-items: center;
+}
+
+.task-monitoring-widget-icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+.task-monitoring-widget-icon.is-projects {
+    color: var(--task-primary);
+    background: var(--task-primary-soft);
+}
+
+.task-monitoring-widget-icon.is-notepad {
+    color: #a47025;
+    background: #fff1d7;
+}
+
+.task-monitoring-widget-loading {
+    color: var(--task-muted);
+    font-size: 11px;
+}
+
+.task-monitoring-widget-loading {
+    margin: 20px;
+}
+
+.task-monitoring-projects-empty {
+    display: flex;
+    min-height: 245px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+}
+
+.task-monitoring-projects-empty > svg {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 12px;
+    color: #a3a5c5;
+}
+
+.task-monitoring-projects-empty h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.task-monitoring-projects-empty p {
+    margin: 6px 0 16px;
+    color: var(--task-muted);
+    font-size: 12px;
+}
+
+.task-monitoring-projects-empty .task-monitoring-secondary-button {
+    min-height: 34px;
+    border-radius: 9px;
+    font-size: 11px;
+}
+
+.task-monitoring-notepad-body {
+    padding: 18px 20px;
+}
+
+#taskMonitoringNotepad {
+    display: block;
+    width: 100%;
+    min-height: 175px;
+    padding: 10px 12px;
+    resize: vertical;
+    border: 1px solid #f0e7d1;
+    border-radius: 10px;
+    color: var(--task-text);
+    background: #fffdf6;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+#taskMonitoringNotepad::placeholder {
+    color: #969080;
+}
+
+.task-monitoring-notepad-footer {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+    color: var(--task-muted);
+    font-size: 10px;
+}
+
+.task-monitoring-notepad-footer > span:last-child {
+    flex-shrink: 0;
+}
+
+@media (max-width: 680px) {
+    .task-monitoring-dashboard-widgets {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+    .task-monitoring-overview {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+    .task-monitoring-metric-card {
+        min-height: 60px;
+        padding: 0 16px;
+    }
+
+    .task-monitoring-metric-card:nth-child(3) {
+        border-left: 0;
+    }
+
+    .task-monitoring-metric-card:nth-child(n + 3) {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--task-border);
+    }
+
+    .task-monitoring-metric-value {
+            font-size: 24px;
+        }
+
+    .task-monitoring-metric-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+}
+
+@media (max-width: 430px) {
+    .task-monitoring-metric-card {
+            padding-right: 12px;
+            padding-left: 12px;
+        }
+}
