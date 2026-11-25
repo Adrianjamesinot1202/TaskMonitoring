@@ -243,7 +243,7 @@ $taskMonitoringInitialCardLimit = 3;
                     <?php } ?>
                 </div>
                 <div class="task-monitoring-list-only task-monitoring-list-heading" aria-hidden="true">
-                    <span>Task</span><span>Due date</span><span>Priority</span><span>Status</span><span>Actions</span>
+                    <span class="task-monitoring-task-heading">Task</span><span>Due date</span><span>Priority</span><span data-list-status-heading>Status</span><span>Actions</span>
                 </div>
                 <div class="task-monitoring-mobile-tabs" aria-label="Task statuses">
                     <?php foreach ($taskMonitoringColumns as $taskMonitoringStatusKey => $taskMonitoringColumn) { ?>
@@ -318,6 +318,14 @@ $taskMonitoringInitialCardLimit = 3;
                                         data-priority="<?php echo htmlspecialchars($taskMonitoringTask['Priority'], ENT_QUOTES, 'UTF-8'); ?>"
                                         data-estimate="<?php echo htmlspecialchars($taskMonitoringTask['Estimate'], ENT_QUOTES, 'UTF-8'); ?>"
                                     >
+                                        <label class="task-monitoring-list-only task-monitoring-complete-control">
+                                            <input
+                                                type="checkbox"
+                                                data-task-complete
+                                                aria-label="<?php echo $taskMonitoringTask['DisplayStatus'] === 'complete' ? 'Completed: ' : 'Mark complete: '; ?><?php echo htmlspecialchars($taskMonitoringTask['TaskTitle'], ENT_QUOTES, 'UTF-8'); ?>"
+                                                <?php echo $taskMonitoringTask['DisplayStatus'] === 'complete' ? 'checked disabled' : ''; ?>
+                                            >
+                                        </label>
                                         <div class="task-monitoring-card-top">
                                             <span class="task-monitoring-category">
                                                 <?php echo htmlspecialchars($taskMonitoringTask['Category'], ENT_QUOTES, 'UTF-8'); ?>

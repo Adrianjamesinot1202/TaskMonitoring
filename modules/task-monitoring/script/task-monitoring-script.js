@@ -1,3 +1,7 @@
+//===================================================================================================
+// MODULE VARIABLES
+//===================================================================================================
+
 var taskMonitoringToastTimer = null;
 var taskMonitoringLastFocusedElement = null;
 var taskMonitoringDraggedCard = null;
@@ -29,7 +33,13 @@ var taskMonitoringBindEvent = typeof window.bindEvent === 'function'
 //===================================================================================================
 
 $(document).ready(function () {
+    taskMonitoringLayout = document.body.getAttribute('data-task-page') === 'dashboard' ? 'list' : 'board';
     task_monitoring_summary();
+
+    if (document.body.getAttribute('data-task-page') === 'dashboard') {
+        task_monitoring_dashboard_projects_summary();
+        task_monitoring_dashboard_notepad_summary();
+    }
 });
 
 taskMonitoringBindEvent('click.taskMonitoringAdd', '#btnTaskMonitoringAdd', function () {
@@ -42,6 +52,10 @@ taskMonitoringBindEvent('click.taskMonitoringView', '[data-task-view]', function
 
 taskMonitoringBindEvent('click.taskMonitoringEdit', '[data-task-edit]', function () {
     task_monitoring_open_edit(this.closest('[data-task-card]'));
+});
+
+taskMonitoringBindEvent('change.taskMonitoringComplete', '[data-task-complete]', function () {
+    task_monitoring_complete_task(this);
 });
 
 taskMonitoringBindEvent('click.taskMonitoringClose', '[data-task-modal-close]', function () {
@@ -92,8 +106,8 @@ taskMonitoringBindEvent('click.taskMonitoringLoadMore', '[data-task-load-more]',
     task_monitoring_load_more(this.getAttribute('data-task-load-more'));
 });
 
-taskMonitoringBindEvent('click.taskMonitoringLayout', '[data-task-layout]', function () {
-    task_monitoring_change_layout(this.getAttribute('data-task-layout'));
+taskMonitoringBindEvent('input.taskMonitoringNotepad', '#taskMonitoringNotepad', function () {
+    task_monitoring_dashboard_notepad_save();
 });
 
 taskMonitoringBindEvent('click.taskMonitoringListStatus', '[data-list-status]', function () {
@@ -331,13 +345,6 @@ function task_monitoring_change_layout(layout) {
 
     taskMonitoringLayout = layout === 'list' ? 'list' : 'board';
 
-    document.querySelectorAll('[data-task-layout]').forEach(function (button) {
-        var isActive = button.getAttribute('data-task-layout') === taskMonitoringLayout;
-
-        button.classList.toggle('is-active', isActive);
-        button.setAttribute('aria-pressed', String(isActive));
-    });
-
     if (!summary) {
         return;
     }
@@ -356,6 +363,8 @@ function task_monitoring_refresh_list() {
     if (!summary) {
         return;
     }
+
+    summary.classList.toggle('is-status-filtered', taskMonitoringListStatus !== 'all');
 
     summary.querySelectorAll('[data-task-card]').forEach(function (card) {
         var matchesStatus = taskMonitoringListStatus === 'all'
@@ -531,6 +540,30 @@ function task_monitoring_drop(dropZone, event) {
     task_monitoring_drag_end();
 }
 
+function task_monitoring_complete_task(checkbox) {
+    var taskCard = checkbox.closest('[data-task-card]');
+    var completeColumn = document.querySelector('[data-task-drop-zone="complete"]');
+
+    if (!checkbox.checked || !taskCard || !completeColumn || taskCard.classList.contains('is-completing')) {
+        return;
+    }
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    checkbox.disabled = true;
+    taskCard.classList.add('is-completing');
+
+    // Let the checkmark and row feedback finish before changing the filtered list.
+    window.setTimeout(function () {
+        if (!taskCard.isConnected) {
+            return;
+        }
+
+        taskCard.classList.remove('is-completing');
+        task_monitoring_move_card(taskCard, 'complete', completeColumn);
+    }, reduceMotion ? 0 : 240);
+}
+
 function task_monitoring_move_card(taskCard, targetStatus, dropZone) {
     var sourceStatus = taskCard.getAttribute('data-status');
     var emptyState = dropZone.querySelector('[data-empty-state]');
@@ -558,6 +591,13 @@ function task_monitoring_update_card_actions(taskCard, status) {
     var firstAction = document.createElement('button');
     var secondAction = document.createElement('button');
     var listStatus = taskCard.querySelector('[data-list-card-status]');
+    var completeCheckbox = taskCard.querySelector('[data-task-complete]');
+
+    if (completeCheckbox) {
+        completeCheckbox.checked = status === 'complete';
+        completeCheckbox.disabled = status === 'complete';
+        completeCheckbox.setAttribute('aria-label', (status === 'complete' ? 'Completed: ' : 'Mark complete: ') + taskCard.getAttribute('data-title'));
+    }
 
     if (listStatus) {
         listStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
@@ -624,4 +664,56 @@ function task_monitoring_refresh_counts() {
         }
     });
     task_monitoring_refresh_list();
+}
+
+//===================================================================================================
+// DASHBOARD WIDGETS
+//===================================================================================================
+
+function task_monitoring_dashboard_projects_summary() {
+    $.post('components/DashboardProjects_Summary.php', {}, function (html) {
+        $('#taskMonitoringProjectsContainer').html(html);
+    }).fail(function (xhr, status, error) {
+        $('#taskMonitoringProjectsContainer').text('Unable to load projects. Please refresh to try again.');
+
+        if (typeof window.handleAjaxError === 'function') {
+            window.handleAjaxError(xhr, status, error);
+        }
+    });
+}
+
+function task_monitoring_dashboard_notepad_summary() {
+    $.post('components/DashboardNotepad_Summary.php', {}, function (html) {
+        $('#taskMonitoringNotepadContainer').html(html);
+
+        var notepad = document.getElementById('taskMonitoringNotepad');
+
+        try {
+            notepad.value = window.localStorage.getItem('taskMonitoringNotepadDraft') || '';
+        } catch (storageError) {
+            document.getElementById('taskMonitoringNotepadStorage').textContent = 'Browser storage unavailable. Copy your notes before leaving.';
+        }
+
+        document.getElementById('taskMonitoringNotepadCount').textContent = notepad.value.length;
+    }).fail(function (xhr, status, error) {
+        $('#taskMonitoringNotepadContainer').text('Unable to load notepad. Please refresh to try again.');
+
+        if (typeof window.handleAjaxError === 'function') {
+            window.handleAjaxError(xhr, status, error);
+        }
+    });
+}
+
+function task_monitoring_dashboard_notepad_save() {
+    var notepad = document.getElementById('taskMonitoringNotepad');
+    var storageStatus = document.getElementById('taskMonitoringNotepadStorage');
+
+    document.getElementById('taskMonitoringNotepadCount').textContent = notepad.value.length;
+
+    try {
+        window.localStorage.setItem('taskMonitoringNotepadDraft', notepad.value);
+        storageStatus.textContent = '';
+    } catch (storageError) {
+        storageStatus.textContent = 'Unable to save. Copy your notes before leaving.';
+    }
 }

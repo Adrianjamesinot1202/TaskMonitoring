@@ -10,13 +10,13 @@ $taskMonitoringToday = new DateTimeImmutable('today');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Monitoring</title>
+    <title>Dashboard | Task Monitoring</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&amp;display=swap">
     <link rel="stylesheet" href="style/task-monitoring-style.css?v=<?php echo filemtime(__DIR__ . '/style/task-monitoring-style.css'); ?>">
 </head>
-<body>
+<body data-task-page="dashboard">
     <div class="task-monitoring-app">
         <aside class="task-monitoring-sidebar" aria-label="Primary navigation">
             <div>
@@ -29,14 +29,18 @@ $taskMonitoringToday = new DateTimeImmutable('today');
 
                 <p class="task-monitoring-nav-label">Workspace</p>
                 <nav class="task-monitoring-nav">
-                    <a class="task-monitoring-nav-item is-active" href="#taskMonitoringBoard" aria-current="page">
+                    <a class="task-monitoring-nav-item is-active" href="task-monitoring-main.php" aria-current="page" aria-label="Dashboard" title="Dashboard">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <rect x="3" y="3" width="7" height="7" rx="2"></rect>
-                            <rect x="14" y="3" width="7" height="7" rx="2"></rect>
-                            <rect x="3" y="14" width="7" height="7" rx="2"></rect>
-                            <rect x="14" y="14" width="7" height="7" rx="2"></rect>
+                            <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"></path>
                         </svg>
-                        <span>My Tasks</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="task-monitoring-nav-item" href="tasks-main.php" aria-label="Tasks" title="Tasks">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <rect x="3" y="4" width="7" height="16" rx="2"></rect>
+                            <rect x="14" y="4" width="7" height="16" rx="2"></rect>
+                        </svg>
+                        <span>Tasks</span>
                     </a>
                     <button class="task-monitoring-nav-item is-disabled" type="button" tabindex="-1">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -115,7 +119,7 @@ $taskMonitoringToday = new DateTimeImmutable('today');
             <section id="taskMonitoringBoard" aria-labelledby="taskMonitoringBoardTitle">
                 <div class="task-monitoring-toolbar">
                     <div class="task-monitoring-section-title">
-                        <h2 id="taskMonitoringBoardTitle">My task board</h2>
+                        <h2 id="taskMonitoringBoardTitle">My tasks</h2>
                     </div>
                     <div class="task-monitoring-toolbar-actions">
                         <label class="task-monitoring-search" for="taskMonitoringSearch">
@@ -134,27 +138,23 @@ $taskMonitoringToday = new DateTimeImmutable('today');
                     </div>
                 </div>
 
-                <div class="task-monitoring-view-switch" role="group" aria-label="Task view">
-                    <button class="task-monitoring-view-button is-active" type="button" data-task-layout="board" aria-pressed="true" aria-controls="taskMonitoringSummaryContainer">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                            <rect x="3" y="4" width="7" height="16" rx="2"></rect>
-                            <rect x="14" y="4" width="7" height="16" rx="2"></rect>
-                        </svg>
-                        Board
-                    </button>
-                    <button class="task-monitoring-view-button" type="button" data-task-layout="list" aria-pressed="false" aria-controls="taskMonitoringSummaryContainer">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-                            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path>
-                        </svg>
-                        List
-                    </button>
-                </div>
-
                 <div id="taskMonitoringSummaryContainer" aria-live="polite">
                     <div class="task-monitoring-empty-state is-visible">
                         <p>Loading tasks...</p>
                     </div>
                 </div>
+            </section>
+            <section class="task-monitoring-dashboard-widgets" aria-label="Workspace widgets">
+                <section class="task-monitoring-widget" aria-labelledby="taskMonitoringProjectsTitle">
+                    <div id="taskMonitoringProjectsContainer" aria-live="polite">
+                        <p class="task-monitoring-widget-loading">Loading projects...</p>
+                    </div>
+                </section>
+                <section class="task-monitoring-widget" aria-labelledby="taskMonitoringNotepadTitle">
+                    <div id="taskMonitoringNotepadContainer">
+                        <p class="task-monitoring-widget-loading">Loading notepad...</p>
+                    </div>
+                </section>
             </section>
         </main>
     </div>
