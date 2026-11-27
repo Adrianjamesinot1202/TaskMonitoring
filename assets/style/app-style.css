@@ -136,6 +136,77 @@ body.is-module-ready #appModuleContent {
     }
 }
 
+.app-toast {
+    position: fixed;
+    z-index: 1100;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: min(380px, calc(100vw - 32px));
+    padding: 13px 16px;
+    border-radius: 13px;
+    color: #ffffff;
+    background: #22273a;
+    box-shadow: 0 18px 40px rgba(17, 21, 38, 0.24);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(14px);
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.app-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.app-toast-mark {
+    display: grid;
+    width: 25px;
+    height: 25px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    place-items: center;
+    color: #ffffff;
+    background: var(--task-success);
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.app-toast p {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.app-toast[data-toast-type="warning"] .app-toast-mark {
+    color: #4d3309;
+    background: #f6cc7b;
+}
+
+.app-toast[data-toast-type="error"] .app-toast-mark {
+    background: var(--task-late);
+}
+
+.app-toast[data-toast-type="info"] .app-toast-mark {
+    background: var(--task-ongoing);
+}
+
+@media (max-width: 430px) {
+    .app-toast {
+        right: 16px;
+        bottom: 16px;
+        left: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app-toast {
+        transition: none;
+    }
+}
+
 .task-monitoring-app {
     display: grid;
     grid-template-columns: 232px minmax(0, 1fr);

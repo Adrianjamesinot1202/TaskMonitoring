@@ -66,7 +66,7 @@ $dashboardToday = new DateTimeImmutable('today');
 <section id="taskMonitoringBoard" aria-labelledby="taskMonitoringBoardTitle">
     <div class="task-monitoring-toolbar">
         <div class="task-monitoring-section-title">
-            <h2 id="taskMonitoringBoardTitle">My tasks</h2>
+            <h2 id="taskMonitoringBoardTitle">My Dashboard</h2>
         </div>
         <div class="task-monitoring-toolbar-actions">
             <label class="task-monitoring-search" for="taskMonitoringSearch">
@@ -85,21 +85,22 @@ $dashboardToday = new DateTimeImmutable('today');
         </div>
     </div>
 
+    <section class="task-monitoring-dashboard-widgets" aria-label="Workspace widgets">
+        <section class="task-monitoring-widget" aria-labelledby="taskMonitoringProjectsTitle">
+            <div id="taskMonitoringProjectsContainer" data-module-component aria-live="polite">
+                <p class="task-monitoring-widget-loading">Loading projects...</p>
+            </div>
+        </section>
+        <section class="task-monitoring-widget" aria-labelledby="taskMonitoringNotepadTitle">
+            <div id="taskMonitoringNotepadContainer" data-module-component>
+                <p class="task-monitoring-widget-loading">Loading notepad...</p>
+            </div>
+        </section>
+    </section>
+
     <div id="taskMonitoringSummaryContainer" data-module-component aria-live="polite">
         <div class="task-monitoring-empty-state is-visible">
             <p>Loading tasks...</p>
         </div>
     </div>
-</section>
-<section class="task-monitoring-dashboard-widgets" aria-label="Workspace widgets">
-    <section class="task-monitoring-widget" aria-labelledby="taskMonitoringProjectsTitle">
-        <div id="taskMonitoringProjectsContainer" data-module-component aria-live="polite">
-            <p class="task-monitoring-widget-loading">Loading projects...</p>
-        </div>
-    </section>
-    <section class="task-monitoring-widget" aria-labelledby="taskMonitoringNotepadTitle">
-        <div id="taskMonitoringNotepadContainer" data-module-component>
-            <p class="task-monitoring-widget-loading">Loading notepad...</p>
-        </div>
-    </section>
 </section>

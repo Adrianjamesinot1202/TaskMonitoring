@@ -25,7 +25,7 @@ $appToday = new DateTimeImmutable('today');
                 <div class="task-monitoring-brand">
                     <div class="task-monitoring-brand-text">
                         <p class="task-monitoring-brand-name">Task Monitor</p>
-                        <p class="task-monitoring-brand-copy">Personal workspace</p>
+                        <p class="task-monitoring-brand-copy">A Personal Project by Aj</p>
                     </div>
                 </div>
 
@@ -157,9 +157,9 @@ $appToday = new DateTimeImmutable('today');
         <div class="task-monitoring-details-container" id="taskMonitoringDetailsContainer"></div>
     </div>
 
-    <div class="task-monitoring-toast" id="taskMonitoringToast" role="status" aria-live="polite">
-        <span class="task-monitoring-toast-mark">✓</span>
-        <p id="taskMonitoringToastMessage">Prototype action completed.</p>
+    <div class="app-toast" id="appToast" role="status" aria-live="polite" aria-atomic="true">
+        <span class="app-toast-mark" id="appToastMark" aria-hidden="true"></span>
+        <p id="appToastMessage"></p>
     </div>
 
     <script
@@ -169,6 +169,10 @@ $appToday = new DateTimeImmutable('today');
     <script
         defer
         src="assets/script/app-script.js?v=<?php echo (new DateTime())->format('YmdHis'); ?>"
+    ></script>
+    <script
+        defer
+        src="assets/script/notifications-script.js?v=<?php echo (new DateTime())->format('YmdHis'); ?>"
     ></script>
     <script
         defer

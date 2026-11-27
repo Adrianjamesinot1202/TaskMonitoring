@@ -53,7 +53,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
-    margin-top: 24px;
+    margin: 0 0 24px;
 }
 
 .task-monitoring-widget {
@@ -154,7 +154,198 @@
 }
 
 .task-monitoring-notepad-body {
+    min-width: 0;
     padding: 18px 20px;
+}
+
+.task-monitoring-notepad-toggle {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    border: 0;
+    border-radius: 8px;
+    color: var(--task-muted);
+    background: transparent;
+    cursor: pointer;
+    place-items: center;
+    transition: color 180ms ease, background-color 180ms ease;
+}
+
+.task-monitoring-notepad-toggle:hover,
+.task-monitoring-notepad-toggle[aria-expanded="true"] {
+    color: #a47025;
+    background: #fff7e8;
+}
+
+.task-monitoring-notepad-toggle svg {
+    width: 19px;
+    height: 19px;
+}
+
+.task-monitoring-notepad-toggle svg[hidden] {
+    display: none;
+}
+
+.task-monitoring-notepad-toggle:focus-visible,
+.task-monitoring-notepad-new:focus-visible,
+.task-monitoring-notepad-item:focus-visible {
+    outline: 2px solid #a47025;
+    outline-offset: 2px;
+}
+
+.task-monitoring-notepad-viewport {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden;
+}
+
+.task-monitoring-notepad-editor,
+.task-monitoring-notepad-notes {
+    grid-area: 1 / 1;
+    min-height: 237px;
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), visibility 320ms;
+}
+
+.task-monitoring-notepad-notes {
+    visibility: hidden;
+    transform: translateX(100%);
+}
+
+.is-notes-view .task-monitoring-notepad-editor {
+    visibility: hidden;
+    transform: translateX(-100%);
+}
+
+.is-notes-view .task-monitoring-notepad-notes {
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.task-monitoring-notepad-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 28px;
+}
+
+.task-monitoring-notepad-list-header h3 {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#taskMonitoringNotepadTotal {
+    margin-left: 5px;
+    color: var(--task-muted);
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.task-monitoring-notepad-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 8px;
+    border: 0;
+    border-radius: 7px;
+    color: #94611f;
+    background: #fff7e8;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.task-monitoring-notepad-new:hover {
+    background: #fff1d7;
+}
+
+.task-monitoring-notepad-new svg {
+    width: 14px;
+    height: 14px;
+}
+
+.task-monitoring-notepad-list-body {
+    height: 157px;
+    margin-top: 12px;
+    padding: 3px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+}
+
+.task-monitoring-notepad-empty {
+    display: grid;
+    height: 100%;
+    margin: 0;
+    color: var(--task-muted);
+    font-size: 12px;
+    place-items: center;
+}
+
+.task-monitoring-notepad-empty[hidden] {
+    display: none;
+}
+
+.task-monitoring-notepad-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.task-monitoring-notepad-list li + li {
+    margin-top: 7px;
+}
+
+.task-monitoring-notepad-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #f0e7d1;
+    border-radius: 9px;
+    color: var(--task-text);
+    background: #fffdf6;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.task-monitoring-notepad-item:hover {
+    border-color: #dbc49d;
+    background: #fff9ee;
+}
+
+.task-monitoring-notepad-item-copy {
+    display: grid;
+    min-width: 0;
+    gap: 4px;
+}
+
+.task-monitoring-notepad-item strong,
+.task-monitoring-notepad-item-copy > span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.task-monitoring-notepad-item strong {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.task-monitoring-notepad-item-copy > span {
+    color: var(--task-muted);
+    font-size: 11px;
+}
+
+.task-monitoring-notepad-item > svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: #a47025;
 }
 
 #taskMonitoringNotepad {
@@ -187,6 +378,15 @@
 
 .task-monitoring-notepad-footer > span:last-child {
     flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .task-monitoring-notepad-editor,
+    .task-monitoring-notepad-notes,
+    .task-monitoring-notepad-toggle,
+    .task-monitoring-notepad-item {
+        transition: none;
+    }
 }
 
 @media (max-width: 680px) {

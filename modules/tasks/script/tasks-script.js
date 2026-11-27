@@ -2,7 +2,6 @@
 // MODULE VARIABLES
 //===================================================================================================
 
-var taskMonitoringToastTimer = null;
 var taskMonitoringLastFocusedElement = null;
 var taskMonitoringDraggedCard = null;
 var taskMonitoringLayout = 'board';
@@ -72,7 +71,7 @@ bindEvent('click.taskMonitoringMobileTab', '[data-mobile-status]', function () {
 });
 
 bindEvent('click.taskMonitoringPrototype', '[data-prototype-action]', function () {
-    tasks_show_toast(this.getAttribute('data-prototype-action') + ' will be connected during the backend phase.');
+    showToast(this.getAttribute('data-prototype-action') + ' will be connected during the backend phase.', 'info');
 });
 
 bindEvent('click.taskMonitoringLoadMore', '[data-task-load-more]', function () {
@@ -111,19 +110,6 @@ bindEvent('drop.taskMonitoringColumn', '[data-task-drop-zone]', function (event)
 //===================================================================================================
 // SHARED FUNCTIONS
 //===================================================================================================
-
-function tasks_show_toast(message) {
-    var toast = document.getElementById('taskMonitoringToast');
-    var toastMessage = document.getElementById('taskMonitoringToastMessage');
-
-    toastMessage.textContent = message;
-    toast.classList.add('is-visible');
-    window.clearTimeout(taskMonitoringToastTimer);
-
-    taskMonitoringToastTimer = window.setTimeout(function () {
-        toast.classList.remove('is-visible');
-    }, 2800);
-}
 
 function tasks_close_modal() {
     var modal = document.getElementById('taskMonitoringModal');
@@ -192,14 +178,13 @@ function tasks_summary() {
             return;
         }
 
-        if (typeof window.handleAjaxError === 'function') {
-            window.handleAjaxError(xhr, status, error);
-            return;
-        }
-
         summaryContainer.html(
             '<div class="task-monitoring-empty-state is-visible"><p>Unable to load the task board.</p></div>'
         );
+
+        if (typeof window.handleAjaxError === 'function') {
+            window.handleAjaxError(xhr, status, error);
+        }
     }).always(function () {
         app_module_component_ready('taskMonitoringSummaryContainer');
     });
@@ -304,9 +289,9 @@ function tasks_preview_save() {
     var isUpdate = form.getAttribute('operation') === '1';
 
     tasks_close_modal();
-    tasks_show_toast(isUpdate
+    showToast(isUpdate
         ? 'The task update is ready for backend wiring.'
-        : 'The new task form is ready for backend wiring.');
+        : 'The new task form is ready for backend wiring.', 'info');
 }
 
 function tasks_filter(searchValue) {
@@ -347,6 +332,7 @@ function tasks_change_layout(layout) {
 function tasks_refresh_list() {
     var summary = document.querySelector('[data-task-summary]');
     var matchingCards = [];
+    var statusCardCount = 0;
 
     if (!summary) {
         return;
@@ -359,6 +345,10 @@ function tasks_refresh_list() {
             || card.getAttribute('data-status') === taskMonitoringListStatus;
 
         card.classList.add('task-monitoring-list-hidden');
+
+        if (matchesStatus) {
+            statusCardCount++;
+        }
 
         if (matchesStatus && !card.classList.contains('task-monitoring-hidden')) {
             matchingCards.push(card);
@@ -387,7 +377,21 @@ function tasks_refresh_list() {
     summary.querySelector('[data-list-page-label]').textContent = taskMonitoringListPage + ' / ' + pageCount;
     summary.querySelector('[data-list-page="-1"]').disabled = taskMonitoringListPage === 1;
     summary.querySelector('[data-list-page="1"]').disabled = taskMonitoringListPage === pageCount;
-    summary.querySelector('[data-list-empty]').hidden = matchingCards.length !== 0;
+    var emptyState = summary.querySelector('[data-list-empty]');
+    var emptyMessage = emptyState.getAttribute('data-empty-message');
+
+    if (taskMonitoringListStatus === 'complete') {
+        emptyMessage = '';
+    } else if (statusCardCount > 0) {
+        emptyMessage = 'No matching tasks. Try another search.';
+    } else if (taskMonitoringListStatus !== 'all') {
+        var statusColumn = summary.querySelector('[data-task-column="' + taskMonitoringListStatus + '"]');
+        emptyMessage = statusColumn.getAttribute('data-empty-message');
+    }
+
+    summary.querySelector('[data-list-empty-message]').textContent = emptyMessage;
+    emptyState.hidden = matchingCards.length !== 0 || emptyMessage === '';
+    summary.classList.toggle('is-list-empty', matchingCards.length === 0);
     tasks_position_list_indicator();
 }
 
@@ -561,7 +565,7 @@ function tasks_move_card(taskCard, targetStatus, dropZone) {
     }
 
     if (sourceStatus === 'late' && targetStatus !== 'complete') {
-        tasks_show_toast('Late tasks stay in Late until their due date changes.');
+        showToast('Late tasks stay in Late until their due date changes.', 'warning');
         return;
     }
 
@@ -571,7 +575,7 @@ function tasks_move_card(taskCard, targetStatus, dropZone) {
     tasks_update_card_actions(taskCard, targetStatus);
     tasks_refresh_counts();
 
-    tasks_show_toast('Task moved to ' + (targetStatus === 'complete' ? 'Complete' : targetStatus.charAt(0).toUpperCase() + targetStatus.slice(1)) + '.');
+    showToast('Task moved to ' + (targetStatus === 'complete' ? 'Complete' : targetStatus.charAt(0).toUpperCase() + targetStatus.slice(1)) + '.', 'success');
 }
 
 function tasks_update_card_actions(taskCard, status) {
@@ -630,7 +634,8 @@ function tasks_refresh_counts() {
         var totalCountElement = taskColumn.querySelector('[data-total-card-count="' + status + '"]');
         var loadMoreButton = taskColumn.querySelector('[data-task-load-more="' + status + '"]');
 
-        emptyState.classList.toggle('is-visible', visibleCards === 0);
+        taskColumn.classList.toggle('is-column-empty', totalCards === 0);
+        emptyState.classList.toggle('is-visible', visibleCards === 0 && taskColumn.getAttribute('data-empty-message') !== '');
         countElement.textContent = visibleCards;
         mobileCountElement.textContent = visibleCards;
 

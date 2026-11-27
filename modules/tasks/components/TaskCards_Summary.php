@@ -6,185 +6,28 @@ header('Content-Type: text/html; charset=utf-8');
 date_default_timezone_set('Asia/Manila');
 
 $taskMonitoringToday = new DateTimeImmutable('today');
-$taskMonitoringTasks = [
-    [
-        'TaskID' => 101,
-        'TaskTitle' => 'Build the task entry modal',
-        'TaskDescription' => 'Finalize the fields, spacing, validation states, and action buttons for creating a task.',
-        'TaskStatus' => 'ONGOING',
-        'DueDate' => $taskMonitoringToday->modify('+1 day')->format('Y-m-d'),
-        'Category' => 'UI Design',
-        'Priority' => 'High',
-        'Estimate' => '2h',
-    ],
-    [
-        'TaskID' => 102,
-        'TaskTitle' => 'Prepare Supabase table plan',
-        'TaskDescription' => 'List the columns and indexes we will need after the interface is approved.',
-        'TaskStatus' => 'PENDING',
-        'DueDate' => $taskMonitoringToday->modify('+3 days')->format('Y-m-d'),
-        'Category' => 'Backend',
-        'Priority' => 'Medium',
-        'Estimate' => '1h',
-    ],
-    [
-        'TaskID' => 103,
-        'TaskTitle' => 'Review the responsive board',
-        'TaskDescription' => 'Check the column layout on desktop and the tab experience on smaller screens.',
-        'TaskStatus' => 'PENDING',
-        'DueDate' => $taskMonitoringToday->format('Y-m-d'),
-        'Category' => 'Review',
-        'Priority' => 'High',
-        'Estimate' => '45m',
-    ],
-    [
-        'TaskID' => 104,
-        'TaskTitle' => 'Define useful empty states',
-        'TaskDescription' => 'Make each status column remain helpful even when it does not contain a task.',
-        'TaskStatus' => 'ONGOING',
-        'DueDate' => $taskMonitoringToday->modify('+2 days')->format('Y-m-d'),
-        'Category' => 'Content',
-        'Priority' => 'Low',
-        'Estimate' => '30m',
-    ],
-    [
-        'TaskID' => 105,
-        'TaskTitle' => 'Confirm the task lifecycle',
-        'TaskDescription' => 'Decide how completed tasks leave the active board while keeping their history.',
-        'TaskStatus' => 'PENDING',
-        'DueDate' => $taskMonitoringToday->modify('-2 days')->format('Y-m-d'),
-        'Category' => 'Planning',
-        'Priority' => 'High',
-        'Estimate' => '20m',
-    ],
-    [
-        'TaskID' => 106,
-        'TaskTitle' => 'Review validation messages',
-        'TaskDescription' => 'Make the form feedback clear, concise, and positioned beside the affected fields.',
-        'TaskStatus' => 'ONGOING',
-        'DueDate' => $taskMonitoringToday->modify('-1 day')->format('Y-m-d'),
-        'Category' => 'Quality',
-        'Priority' => 'Medium',
-        'Estimate' => '40m',
-    ],
-    [
-        'TaskID' => 107,
-        'TaskTitle' => 'Polish card interactions',
-        'TaskDescription' => 'Review hover states, focus states, action placement, and touch target sizes.',
-        'TaskStatus' => 'ONGOING',
-        'DueDate' => $taskMonitoringToday->modify('+5 days')->format('Y-m-d'),
-        'Category' => 'UI Design',
-        'Priority' => 'Medium',
-        'Estimate' => '1.5h',
-    ],
-    [
-        'TaskID' => 108,
-        'TaskTitle' => 'Approve the visual direction',
-        'TaskDescription' => 'Choose the final colors, density, and page structure before backend development begins.',
-        'TaskStatus' => 'COMPLETED',
-        'DueDate' => $taskMonitoringToday->modify('-1 day')->format('Y-m-d'),
-        'Category' => 'Review',
-        'Priority' => 'Medium',
-        'Estimate' => '30m',
-    ],
-    [
-        'TaskID' => 109,
-        'TaskTitle' => 'Plan the first database migration',
-        'TaskDescription' => 'Turn the approved task fields into a clean Supabase migration checklist.',
-        'TaskStatus' => 'PENDING',
-        'DueDate' => $taskMonitoringToday->modify('+4 days')->format('Y-m-d'),
-        'Category' => 'Backend',
-        'Priority' => 'Medium',
-        'Estimate' => '1h',
-    ],
-    [
-        'TaskID' => 110,
-        'TaskTitle' => 'Draft the filter interactions',
-        'TaskDescription' => 'Define how priority, category, and due-date filters work together.',
-        'TaskStatus' => 'PENDING',
-        'DueDate' => $taskMonitoringToday->modify('+6 days')->format('Y-m-d'),
-        'Category' => 'Planning',
-        'Priority' => 'Low',
-        'Estimate' => '35m',
-    ],
-    [
-        'TaskID' => 111,
-        'TaskTitle' => 'Test keyboard card controls',
-        'TaskDescription' => 'Make sure every card action can be reached without using a mouse.',
-        'TaskStatus' => 'ONGOING',
-        'DueDate' => $taskMonitoringToday->modify('+3 days')->format('Y-m-d'),
-        'Category' => 'Quality',
-        'Priority' => 'High',
-        'Estimate' => '50m',
-    ],
-    [
-        'TaskID' => 112,
-        'TaskTitle' => 'Write the empty-board copy',
-        'TaskDescription' => 'Prepare short messages that explain what to do when a column is empty.',
-        'TaskStatus' => 'ONGOING',
-        'DueDate' => $taskMonitoringToday->modify('+7 days')->format('Y-m-d'),
-        'Category' => 'Content',
-        'Priority' => 'Low',
-        'Estimate' => '25m',
-    ],
-    [
-        'TaskID' => 113,
-        'TaskTitle' => 'Document the drag behavior',
-        'TaskDescription' => 'Record the accepted status changes before connecting database updates.',
-        'TaskStatus' => 'COMPLETED',
-        'DueDate' => $taskMonitoringToday->modify('-3 days')->format('Y-m-d'),
-        'Category' => 'Documentation',
-        'Priority' => 'Low',
-        'Estimate' => '20m',
-    ],
-    [
-        'TaskID' => 114,
-        'TaskTitle' => 'Check desktop spacing',
-        'TaskDescription' => 'Verify the board remains readable at common laptop and monitor sizes.',
-        'TaskStatus' => 'COMPLETED',
-        'DueDate' => $taskMonitoringToday->modify('-4 days')->format('Y-m-d'),
-        'Category' => 'Review',
-        'Priority' => 'Medium',
-        'Estimate' => '30m',
-    ],
-    [
-        'TaskID' => 115,
-        'TaskTitle' => 'Resolve overdue content review',
-        'TaskDescription' => 'Finalize the remaining labels so implementation can continue cleanly.',
-        'TaskStatus' => 'PENDING',
-        'DueDate' => $taskMonitoringToday->modify('-4 days')->format('Y-m-d'),
-        'Category' => 'Content',
-        'Priority' => 'High',
-        'Estimate' => '45m',
-    ],
-    [
-        'TaskID' => 116,
-        'TaskTitle' => 'Update the old task estimates',
-        'TaskDescription' => 'Review overdue items and give each one a more realistic time estimate.',
-        'TaskStatus' => 'ONGOING',
-        'DueDate' => $taskMonitoringToday->modify('-5 days')->format('Y-m-d'),
-        'Category' => 'Planning',
-        'Priority' => 'Medium',
-        'Estimate' => '30m',
-    ],
-];
+$taskMonitoringTasks = [];
 
 $taskMonitoringColumns = [
     'pending' => [
         'label' => 'Pending',
         'description' => 'Ready to be picked up',
+        'empty_message' => 'No pending Task for now',
     ],
     'ongoing' => [
         'label' => 'Ongoing',
         'description' => 'Currently in progress',
+        'empty_message' => 'No ongoing Task for now',
     ],
     'complete' => [
         'label' => 'Complete',
         'description' => 'Finished and archived',
+        'empty_message' => '',
     ],
     'late' => [
         'label' => 'Late',
         'description' => 'Detected automatically',
+        'empty_message' => 'No late tasks',
     ],
 ];
 
@@ -263,6 +106,7 @@ $taskMonitoringInitialCardLimit = 3;
                         <section
                             class="task-monitoring-column is-<?php echo htmlspecialchars($taskMonitoringStatusKey, ENT_QUOTES, 'UTF-8'); ?><?php echo $taskMonitoringStatusKey === 'pending' ? ' is-mobile-active' : ''; ?>"
                             data-task-column="<?php echo htmlspecialchars($taskMonitoringStatusKey, ENT_QUOTES, 'UTF-8'); ?>"
+                            data-empty-message="<?php echo htmlspecialchars($taskMonitoringColumn['empty_message'], ENT_QUOTES, 'UTF-8'); ?>"
                             aria-labelledby="taskMonitoringColumn<?php echo ucfirst($taskMonitoringStatusKey); ?>"
                         >
                             <header class="task-monitoring-column-header">
@@ -403,8 +247,10 @@ $taskMonitoringInitialCardLimit = 3;
                                     </article>
                                 <?php } ?>
 
-                                <div class="task-monitoring-empty-state<?php echo count($taskMonitoringGroupedTasks[$taskMonitoringStatusKey]) === 0 ? ' is-visible' : ''; ?>" data-empty-state>
-                                    <p>No <?php echo strtolower(htmlspecialchars($taskMonitoringColumn['label'], ENT_QUOTES, 'UTF-8')); ?> tasks to show.</p>
+                                <div class="task-monitoring-empty-state<?php echo count($taskMonitoringGroupedTasks[$taskMonitoringStatusKey]) === 0 && $taskMonitoringColumn['empty_message'] !== '' ? ' is-visible' : ''; ?>" data-empty-state>
+                                    <?php if ($taskMonitoringColumn['empty_message'] !== '') { ?>
+                                        <p><?php echo htmlspecialchars($taskMonitoringColumn['empty_message'], ENT_QUOTES, 'UTF-8'); ?></p>
+                                    <?php } ?>
                                 </div>
                             </div>
 
@@ -437,8 +283,8 @@ $taskMonitoringInitialCardLimit = 3;
                         </section>
                     <?php } ?>
                 </div>
-                <div class="task-monitoring-list-only task-monitoring-list-empty" data-list-empty hidden>
-                    No tasks found. Try another status or search.
+                <div class="task-monitoring-list-only task-monitoring-list-empty" data-list-empty data-empty-message="No tasks for now" hidden>
+                    <p data-list-empty-message>No tasks for now</p>
                 </div>
                 <footer class="task-monitoring-list-only task-monitoring-list-pagination">
                     <span data-list-results></span>

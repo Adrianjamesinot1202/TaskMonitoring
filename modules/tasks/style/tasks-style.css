@@ -169,6 +169,13 @@
     font-weight: 700;
 }
 
+[data-task-summary].is-list.is-list-empty .task-monitoring-list-heading,
+[data-task-summary].is-list.is-list-empty .task-monitoring-board,
+[data-task-summary].is-list.is-list-empty .task-monitoring-list-pagination,
+.task-monitoring-column.is-column-empty .task-monitoring-column-footer {
+    display: none;
+}
+
 .task-monitoring-task-heading {
     grid-column: 1 / span 2;
     justify-self: start;
@@ -377,11 +384,20 @@
 }
 
 [data-task-summary].is-list .task-monitoring-list-empty {
+    align-items: center;
     justify-content: center;
+    min-height: 160px;
     padding: 35px 16px;
+    border: 1px solid var(--task-border);
+    border-radius: 14px;
     color: var(--task-muted);
+    background: var(--task-surface);
     font-size: 13px;
     text-align: center;
+}
+
+.task-monitoring-list-empty p {
+    margin: 0;
 }
 
 .task-monitoring-mobile-tabs {
@@ -1137,49 +1153,6 @@ body[data-task-page="tasks"] .task-monitoring-column {
     background: #fafbfc;
 }
 
-.task-monitoring-toast {
-    position: fixed;
-    z-index: 1100;
-    right: 24px;
-    bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    max-width: min(380px, calc(100vw - 32px));
-    padding: 13px 16px;
-    border-radius: 13px;
-    color: #ffffff;
-    background: #22273a;
-    box-shadow: 0 18px 40px rgba(17, 21, 38, 0.24);
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(14px);
-    transition: opacity 180ms ease, transform 180ms ease;
-}
-
-.task-monitoring-toast.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.task-monitoring-toast-mark {
-    display: grid;
-    width: 25px;
-    height: 25px;
-    flex: 0 0 auto;
-    border-radius: 50%;
-    place-items: center;
-    color: #ffffff;
-    background: var(--task-success);
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.task-monitoring-toast p {
-    margin: 0;
-    font-size: 11px;
-    font-weight: 650;
-}
 
 .task-monitoring-hidden {
     display: none !important;
@@ -1314,9 +1287,4 @@ body[data-task-page="tasks"] .task-monitoring-column {
             border-radius: 22px 22px 0 0;
         }
 
-    .task-monitoring-toast {
-            right: 16px;
-            bottom: 16px;
-            left: 16px;
-        }
 }
